@@ -8,15 +8,23 @@ import SwiftUI
 struct ContentView: View {
     
     @State private var diceValue = Int.random(in: 1...6)
+    var dicevalues: [Int] = []
     
     var body: some View {
-        VStack {
-            Text(String(diceValue))
-            Button("Roll") {
-                rollDice()
+        NavigationStack {
+            VStack {
+                Text(String(diceValue))
+                Button("Roll") {
+                    rollDice()
+                }
+            }
+            .toolbar {
+                Button("debug") {
+                    print(dicevalues)
+                }
             }
         }
-        .padding()
+        
         
     }
     
