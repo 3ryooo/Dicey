@@ -6,15 +6,24 @@
 import SwiftUI
 
 struct ContentView: View {
+    
+    @State private var diceValue = Int.random(in: 1...6)
+    
     var body: some View {
         VStack {
-            Image(systemName: "globe")
-                .imageScale(.large)
-                .foregroundStyle(.tint)
-            Text("Hello, world!")
+            Text(String(diceValue))
+            Button("Roll") {
+                rollDice()
+            }
         }
         .padding()
+        
     }
+    
+    func rollDice() {
+        diceValue = Int.random(in: 1...6)
+    }
+    
 }
 
 #Preview {
