@@ -17,7 +17,11 @@ struct ContentView: View {
                 NavigationLink("履歴") {
                     RollHistoryView(sets: sets)
                 }
-                Stepper("\(numberOfSides)面", value: $numberOfSides, in: 1...100, step: 1)
+                Picker("aaa", selection: $numberOfSides) {
+                    ForEach(0..<101, id: \.self) {
+                        Text("\($0)面")
+                    }
+                }
                 Text(String(diceValue))
                 Button("Roll") {
                     rollDice()
