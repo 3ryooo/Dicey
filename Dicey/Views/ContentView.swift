@@ -11,9 +11,9 @@ struct ContentView: View {
     
     @State private var numberOfSides = 6
     @State private var numberOfDice = 1
-    @State private var diceValue1 = 1
-    @State private var diceValue2 = 1
-    @State private var diceValue3 = 1
+    @State private var diceValue1 = 0
+    @State private var diceValue2 = 0
+    @State private var diceValue3 = 0
     @State private var sumOfDice = 0
     @State private var showingSheet = false
     
@@ -38,13 +38,17 @@ struct ContentView: View {
                         Text("サイコロ 1")
                         Text(String(diceValue1))
                     }
-                    VStack {
-                        Text("サイコロ 2")
-                        Text(String(diceValue2))
+                    if numberOfDice >= 2 {
+                        VStack {
+                            Text("サイコロ 2")
+                            Text(String(diceValue2))
+                        }
                     }
-                    VStack {
-                        Text("サイコロ 3")
-                        Text(String(diceValue3))
+                    if numberOfDice >= 3 {
+                        VStack {
+                            Text("サイコロ 3")
+                            Text(String(diceValue3))
+                        }
                     }
                 }
             }
@@ -75,12 +79,23 @@ struct ContentView: View {
     }
     
     func rollDice() {
-        sumOfDice = 0
+        diceReset()
         diceValue1 = Int.random(in: 1...numberOfSides)
-        diceValue2 = Int.random(in: 1...numberOfSides)
-        diceValue3 = Int.random(in: 1...numberOfSides)
+        if numberOfDice >= 2 {
+            diceValue2 = Int.random(in: 1...numberOfSides)
+        }
+        if numberOfDice >= 3 {
+            diceValue3 = Int.random(in: 1...numberOfSides)
+        }
         sumOfDice = diceValue1 + diceValue2 + diceValue3
         sets.dicevalues.append(Dice(diceValue1: diceValue1, diceValue2: diceValue2, diceValue3: diceValue3, sumOfDice: sumOfDice))
+    }
+    
+    func diceReset() {
+        sumOfDice = 0
+        diceValue1 = 0
+        diceValue2 = 0
+        diceValue3 = 0
     }
     
 }

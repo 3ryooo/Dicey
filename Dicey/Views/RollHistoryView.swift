@@ -16,7 +16,12 @@ struct RollHistoryView: View {
             VStack {
                 List {
                     ForEach(sets.dicevalues) { sets in
-                        Text(String(sets.sumOfDice))
+                        Text(
+                            String("1個目：\(sets.diceValue1)\n") +
+                            String("2個目：\(sets.diceValue2)\n") +
+                            String("3個目：\(sets.diceValue3)\n") +
+                            String("合計：\(sets.sumOfDice)")
+                        )
                     }
                 }
             }
@@ -29,8 +34,6 @@ struct RollHistoryView: View {
                 }
             }
         }
-        
-        
     }
 }
 
