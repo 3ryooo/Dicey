@@ -28,123 +28,10 @@ struct ContentView: View {
                 .ignoresSafeArea()
 
                 VStack(spacing: 20) {
-                    GroupBox {
-                        HStack {
-                            Text("サイコロの面")
-                                .font(.headline)
-                            Spacer()
-                            Button {
-                                decrementSides()
-                            } label: {
-                                Image(systemName: "minus.circle.fill")
-                            }
-                            .disabled(numberOfSides <= 1)
-
-                            Text("\(numberOfSides)面")
-                                .font(.title3.bold())
-                                .frame(minWidth: 70, alignment: .center)
-
-                            Button {
-                                incrementSides()
-                            } label: {
-                                Image(systemName: "plus.circle.fill")
-                            }
-                            .disabled(numberOfSides >= 100)
-                        }
-//                        Picker("面を選択", selection: $numberOfSides) {
-//                            ForEach(1..<101, id: \.self) {
-//                                Text("\($0)面")
-//                            }
-//                        }
-//                        .pickerStyle(.menu)
-                        Divider()
-                        HStack {
-                            Text("サイコロの数")
-                                .font(.headline)
-                            Spacer()
-                            Picker("サイコロの数", selection: $numberOfDice) {
-                                ForEach(1..<4, id: \.self) {
-                                    Text("\($0)個")
-                                }
-                            }
-                            .pickerStyle(.segmented)
-                            .onChange(of: numberOfDice) {
-                                resetDiceValues()
-                            }
-                        }
-                    }
-                    .padding(.horizontal)
-                    .backgroundStyle(.thinMaterial)
-
-                    Section {
-                        HStack {
-                            Spacer()
-                            ForEach(0..<currentRollValues.count, id: \.self) { index in
-                                VStack {
-                                    Text(String(currentRollValues[index]))
-                                        .font(.system(size: 40, weight: .bold))
-                                        .lineLimit(1)
-                                        .minimumScaleFactor(0.5)
-                                }
-                                .frame(width: 80, height: 80)
-                                .background(Color.white.opacity(0.8))
-                                .cornerRadius(10)
-                                .shadow(radius: 3)
-                                if index < currentRollValues.count - 1 {
-                                    Spacer()
-                                }
-                            }
-                            Spacer()
-                        }
-                        if currentRollValues.isEmpty && numberOfDice > 0 {
-                            HStack {
-                                Spacer()
-                                ForEach(0..<numberOfDice, id: \.self) { index in
-                                    VStack {
-                                        Text("0")
-                                            .font(.system(size: 40, weight: .bold))
-                                            .foregroundColor(.gray)
-                                            .lineLimit(1)
-                                            .minimumScaleFactor(0.5)
-                                    }
-                                    .frame(width: 80, height: 80)
-                                    .background(Color.white.opacity(0.5))
-                                    .cornerRadius(10)
-                                    .shadow(radius: 3)
-                                    if index < numberOfDice - 1 {
-                                        Spacer()
-                                    }
-                                }
-                                Spacer()
-                            }
-                        }
-                    }
-
-                    Section {
-                        Text("合計値")
-                            .font(.title2.bold())
-                        Text(String(sumOfDice))
-                            .font(.largeTitle.bold())
-                            .foregroundColor(.primary)
-                    }
-
-                    Section {
-                        Button {
-                            diceEffect()
-                        } label: {
-                            Label("振る！", systemImage: "dice.fill")
-                                .font(.title.bold())
-                                .padding()
-                                .frame(maxWidth: .infinity)
-                                .background(Color.red)
-                                .foregroundColor(Color.white)
-                                .clipShape(Capsule())
-                                .shadow(radius: 5)
-                        }
-                        .sensoryFeedback(.impact(weight: .heavy, intensity: 1), trigger: sumOfDice)
-                    }
-                    .padding(.horizontal)
-
+                    settingsContent
+                    diceDisplayContent
+                    sumDisplayContent
+                    rollButtonContent
                     Spacer()
                 }
                 .padding(.top)
@@ -161,6 +48,133 @@ struct ContentView: View {
                 RollHistoryView()
             }
         }
+    }
+    
+    private var settingsContent: some View {
+        GroupBox {
+            HStack {
+                Text("サイコロの面")
+                    .font(.headline)
+                    .accessibilityLabel("The dice side")
+                Spacer()
+                Button {
+                    decrementSides()
+                } label: {
+                    Image(systemName: "minus.circle.fill")
+                }
+                .disabled(numberOfSides <= 1)
+
+                Text("\(numberOfSides)面")
+                    .font(.title3.bold())
+                    .frame(minWidth: 70, alignment: .center)
+                    .accessibilityLabel("The current dice face is set to \(numberOfSides)")
+
+                Button {
+                    incrementSides()
+                } label: {
+                    Image(systemName: "plus.circle.fill")
+                }
+                .disabled(numberOfSides >= 100)
+            }
+            Divider()
+            HStack {
+                Text("サイコロの数")
+                    .font(.headline)
+                    .accessibilityLabel("Number of dice")
+                Spacer()
+                Picker("サイコロの数", selection: $numberOfDice) {
+                    ForEach(1..<4, id: \.self) {
+                        Text("\($0)個")
+                    }
+                }
+                .pickerStyle(.segmented)
+                .onChange(of: numberOfDice) {
+                    resetDiceValues()
+                }
+            }
+        }
+        .padding(.horizontal)
+        .backgroundStyle(.thinMaterial)
+    }
+
+    private var diceDisplayContent: some View {
+        Section {
+            HStack {
+                Spacer()
+                ForEach(0..<currentRollValues.count, id: \.self) { index in
+                    VStack {
+                        Text(String(currentRollValues[index]))
+                            .font(.system(size: 40, weight: .bold))
+                            .lineLimit(1)
+                            .minimumScaleFactor(0.5)
+                    }
+                    .frame(width: 80, height: 80)
+                    .background(Color.white.opacity(0.8))
+                    .cornerRadius(10)
+                    .shadow(radius: 3)
+                    .accessibilityLabel("No.\(index + 1) Dice is \(currentRollValues[index])")
+                    if index < currentRollValues.count - 1 {
+                        Spacer()
+                    }
+                }
+                Spacer()
+            }
+            if currentRollValues.isEmpty && numberOfDice > 0 {
+                HStack {
+                    Spacer()
+                    ForEach(0..<numberOfDice, id: \.self) { index in
+                        VStack {
+                            Text("0")
+                                .font(.system(size: 40, weight: .bold))
+                                .foregroundColor(.gray)
+                                .lineLimit(1)
+                                .minimumScaleFactor(0.5)
+                                .accessibilityHidden(true)
+                        }
+                        .frame(width: 80, height: 80)
+                        .background(Color.white.opacity(0.5))
+                        .cornerRadius(10)
+                        .shadow(radius: 3)
+                        if index < numberOfDice - 1 {
+                            Spacer()
+                        }
+                    }
+                    Spacer()
+                }
+            }
+        }
+    }
+
+    private var sumDisplayContent: some View {
+        Section {
+            Text("合計値")
+                .font(.title2.bold())
+                .accessibilityHidden(true)
+            Text(String(sumOfDice))
+                .font(.largeTitle.bold())
+                .foregroundColor(.primary)
+                .accessibilityLabel("The total is \(sumOfDice)")
+        }
+    }
+
+    private var rollButtonContent: some View {
+        Section {
+            Button {
+                diceEffect()
+            } label: {
+                Label("振る！", systemImage: "dice.fill")
+                    .font(.title.bold())
+                    .padding()
+                    .frame(maxWidth: .infinity)
+                    .background(Color.red)
+                    .foregroundColor(Color.white)
+                    .clipShape(Capsule())
+                    .shadow(radius: 5)
+            }
+            .sensoryFeedback(.impact(weight: .heavy, intensity: 1), trigger: sumOfDice)
+            .accessibilityLabel("Roll the dice")
+        }
+        .padding(.horizontal)
     }
     
     func rollDice() {
