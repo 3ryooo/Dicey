@@ -59,7 +59,7 @@ struct ContentView: View {
             }
             Section {
                 Button("Roll") {
-                    rollDice()
+                    diceEffect()
                 }
                 .sensoryFeedback(.impact(weight: .heavy, intensity: 1), trigger: sumOfDice)
             }
@@ -99,6 +99,26 @@ struct ContentView: View {
         diceValue1 = 0
         diceValue2 = 0
         diceValue3 = 0
+    }
+    
+    func diceEffect() {
+        var timer: Timer!
+        var counter = 0
+        
+        diceReset()
+        
+        timer = Timer.scheduledTimer(withTimeInterval: 0.2, repeats: true) { (_) in
+            if counter == 10 {
+                timer.invalidate()
+                rollDice()
+                counter = 0
+            } else {
+                diceValue1 = Int.random(in: 1...numberOfSides)
+                diceValue2 = Int.random(in: 1...numberOfSides)
+                diceValue3 = Int.random(in: 1...numberOfSides)
+            }
+            counter += 1
+        }
     }
     
 }
