@@ -61,6 +61,7 @@ struct ContentView: View {
                 Button("Roll") {
                     rollDice()
                 }
+                .sensoryFeedback(.impact(weight: .heavy, intensity: 1), trigger: sumOfDice)
             }
             
             .toolbar {
