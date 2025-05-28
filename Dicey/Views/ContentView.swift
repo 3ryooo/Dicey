@@ -7,8 +7,8 @@ import SwiftUI
 
 struct ContentView: View {
     
-    @State private var diceValue = Int.random(in: 1...6)
-    
+    @State private var numberOfSides = 6
+    @State private var diceValue = 1
     @State private var sets = DiceSet()
     
     var body: some View {
@@ -17,6 +17,7 @@ struct ContentView: View {
                 NavigationLink("履歴") {
                     RollHistoryView(sets: sets)
                 }
+                Stepper("\(numberOfSides)面", value: $numberOfSides, in: 1...100, step: 1)
                 Text(String(diceValue))
                 Button("Roll") {
                     rollDice()
@@ -33,8 +34,8 @@ struct ContentView: View {
     }
     
     func rollDice() {
+        diceValue = Int.random(in: 1...numberOfSides)
         sets.dicevalues.append(diceValue)
-        diceValue = Int.random(in: 1...6)
     }
     
 }
