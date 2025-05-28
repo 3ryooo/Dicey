@@ -20,7 +20,7 @@ struct ContentView: View {
     
     var body: some View {
         NavigationStack {
-            VStack {
+            Section {
                 Picker("サイコロの面", selection: $numberOfSides) {
                     ForEach(1..<101, id: \.self) {
                         Text("\($0)面")
@@ -31,14 +31,33 @@ struct ContentView: View {
                         Text("\($0)個")
                     }
                 }
-                Text(String(diceValue1))
-                Text(String(diceValue2))
-                Text(String(diceValue3))
+            }
+            Section {
+                HStack {
+                    VStack {
+                        Text("サイコロ 1")
+                        Text(String(diceValue1))
+                    }
+                    VStack {
+                        Text("サイコロ 2")
+                        Text(String(diceValue2))
+                    }
+                    VStack {
+                        Text("サイコロ 3")
+                        Text(String(diceValue3))
+                    }
+                }
+            }
+            Section {
+                Text("合計値")
                 Text(String(sumOfDice))
+            }
+            Section {
                 Button("Roll") {
                     rollDice()
                 }
             }
+            
             .toolbar {
                 Button("debug") {
                     print(sets.dicevalues)
