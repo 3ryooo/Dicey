@@ -6,9 +6,10 @@
 import SwiftUI
 
 struct RollHistoryView: View {
-    var sets: DiceSet
     
-    var tests = [0, 1, 2, 3]
+    @Environment(\.dismiss) var dismiss
+    
+    var sets: DiceSet
     
     var body: some View {
         NavigationStack {
@@ -22,6 +23,9 @@ struct RollHistoryView: View {
             .toolbar {
                 Button("debug") {
                     print(sets.dicevalues)
+                }
+                Button("完了") {
+                    dismiss()
                 }
             }
         }

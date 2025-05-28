@@ -15,14 +15,12 @@ struct ContentView: View {
     @State private var diceValue2 = 1
     @State private var diceValue3 = 1
     @State private var sumOfDice = 0
+    @State private var showingSheet = false
     
     
     var body: some View {
         NavigationStack {
             VStack {
-                NavigationLink("履歴") {
-                    RollHistoryView(sets: sets)
-                }
                 Picker("サイコロの面", selection: $numberOfSides) {
                     ForEach(1..<101, id: \.self) {
                         Text("\($0)面")
@@ -45,6 +43,12 @@ struct ContentView: View {
                 Button("debug") {
                     print(sets.dicevalues)
                 }
+                Button("履歴") {
+                    showingSheet = true
+                }
+            }
+            .sheet(isPresented: $showingSheet) {
+                RollHistoryView(sets: sets)
             }
         }
         
