@@ -4,11 +4,13 @@
 //
 
 import SwiftUI
+import SwiftData
 
 struct ContentView: View {
     
-    @State private var sets = DiceSet()
+    @Environment(\.modelContext) var modelContext
     
+    @Query private var sets: [Dice]
     @State private var numberOfSides = 6
     @State private var numberOfDice = 1
     @State private var diceValue1 = 0
@@ -16,7 +18,6 @@ struct ContentView: View {
     @State private var diceValue3 = 0
     @State private var sumOfDice = 0
     @State private var showingSheet = false
-    
     
     var body: some View {
         NavigationStack {
@@ -64,14 +65,14 @@ struct ContentView: View {
             
             .toolbar {
                 Button("debug") {
-                    print(sets.dicevalues)
+                    print(sets)
                 }
                 Button("履歴") {
                     showingSheet = true
                 }
             }
             .sheet(isPresented: $showingSheet) {
-                RollHistoryView(sets: sets)
+                RollHistoryView()
             }
         }
         
@@ -88,7 +89,8 @@ struct ContentView: View {
             diceValue3 = Int.random(in: 1...numberOfSides)
         }
         sumOfDice = diceValue1 + diceValue2 + diceValue3
-        sets.dicevalues.append(Dice(diceValue1: diceValue1, diceValue2: diceValue2, diceValue3: diceValue3, sumOfDice: sumOfDice))
+        let newItem = Dice(diceValue1: diceValue1, diceValue2: diceValue2, diceValue3: diceValue3, sumOfDice: sumOfDice, createdAt: Date())
+        modelContext.insert(newItem)
     }
     
     func diceReset() {

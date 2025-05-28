@@ -4,18 +4,20 @@
 //
 
 import SwiftUI
+import SwiftData
 
 struct RollHistoryView: View {
     
     @Environment(\.dismiss) var dismiss
+    @Environment(\.modelContext) var modelContext
     
-    var sets: DiceSet
+    @Query private var sets: [Dice]
     
     var body: some View {
         NavigationStack {
             VStack {
                 List {
-                    ForEach(sets.dicevalues) { sets in
+                    ForEach(sets) { sets in
                         Text(
                             String("1個目：\(sets.diceValue1)\n") +
                             String("2個目：\(sets.diceValue2)\n") +
@@ -27,7 +29,7 @@ struct RollHistoryView: View {
             }
             .toolbar {
                 Button("debug") {
-                    print(sets.dicevalues)
+                    print(sets)
                 }
                 Button("完了") {
                     dismiss()
@@ -38,5 +40,6 @@ struct RollHistoryView: View {
 }
 
 #Preview {
-    RollHistoryView(sets: DiceSet())
+    RollHistoryView()
+        .modelContainer(for: Dice.self)
 }
