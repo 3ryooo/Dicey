@@ -20,41 +20,76 @@ struct ContentView: View {
     var body: some View {
         NavigationStack {
             ZStack {
-                VStack {
-                    Section {
+                LinearGradient(
+                    gradient: Gradient(colors: [Color.orange.opacity(0.3), Color.purple.opacity(0.5)]),
+                    startPoint: .topLeading,
+                    endPoint: .bottomTrailing
+                )
+                .ignoresSafeArea()
+
+                VStack(spacing: 20) {
+                    GroupBox {
                         HStack {
                             Text("サイコロの面")
+                                .font(.headline)
                             Spacer()
-                            Picker("サイコロの面", selection: $numberOfSides) {
-                                ForEach(1..<101, id: \.self) {
-                                    Text("\($0)面")
-                                }
+                            Button {
+                                decrementSides()
+                            } label: {
+                                Image(systemName: "minus.circle.fill")
                             }
+                            .disabled(numberOfSides <= 1)
+
+                            Text("\(numberOfSides)面")
+                                .font(.title3.bold())
+                                .frame(minWidth: 70, alignment: .center)
+
+                            Button {
+                                incrementSides()
+                            } label: {
+                                Image(systemName: "plus.circle.fill")
+                            }
+                            .disabled(numberOfSides >= 100)
                         }
+//                        Picker("面を選択", selection: $numberOfSides) {
+//                            ForEach(1..<101, id: \.self) {
+//                                Text("\($0)面")
+//                            }
+//                        }
+//                        .pickerStyle(.menu)
+                        Divider()
                         HStack {
                             Text("サイコロの数")
+                                .font(.headline)
                             Spacer()
                             Picker("サイコロの数", selection: $numberOfDice) {
                                 ForEach(1..<4, id: \.self) {
                                     Text("\($0)個")
                                 }
                             }
+                            .pickerStyle(.segmented)
                             .onChange(of: numberOfDice) {
                                 resetDiceValues()
                             }
                         }
                     }
-                    .padding()
-                    .font(.title)
-                    .bold()
+                    .padding(.horizontal)
+                    .backgroundStyle(.thinMaterial)
+
                     Section {
                         HStack {
                             Spacer()
                             ForEach(0..<currentRollValues.count, id: \.self) { index in
                                 VStack {
-                                    Text("No.\(index + 1)")
                                     Text(String(currentRollValues[index]))
+                                        .font(.system(size: 40, weight: .bold))
+                                        .lineLimit(1)
+                                        .minimumScaleFactor(0.5)
                                 }
+                                .frame(width: 80, height: 80)
+                                .background(Color.white.opacity(0.8))
+                                .cornerRadius(10)
+                                .shadow(radius: 3)
                                 if index < currentRollValues.count - 1 {
                                     Spacer()
                                 }
@@ -66,9 +101,16 @@ struct ContentView: View {
                                 Spacer()
                                 ForEach(0..<numberOfDice, id: \.self) { index in
                                     VStack {
-                                        Text("No.\(index + 1)")
                                         Text("0")
+                                            .font(.system(size: 40, weight: .bold))
+                                            .foregroundColor(.gray)
+                                            .lineLimit(1)
+                                            .minimumScaleFactor(0.5)
                                     }
+                                    .frame(width: 80, height: 80)
+                                    .background(Color.white.opacity(0.5))
+                                    .cornerRadius(10)
+                                    .shadow(radius: 3)
                                     if index < numberOfDice - 1 {
                                         Spacer()
                                     }
@@ -77,46 +119,48 @@ struct ContentView: View {
                             }
                         }
                     }
-                    .padding()
-                    .font(.title)
-                    .bold()
+
                     Section {
                         Text("合計値")
+                            .font(.title2.bold())
                         Text(String(sumOfDice))
+                            .font(.largeTitle.bold())
+                            .foregroundColor(.primary)
                     }
-                    .padding()
-                    .font(.title)
-                    .bold()
+
                     Section {
-                        Button("振る！") {
+                        Button {
                             diceEffect()
+                        } label: {
+                            Label("振る！", systemImage: "dice.fill")
+                                .font(.title.bold())
+                                .padding()
+                                .frame(maxWidth: .infinity)
+                                .background(Color.red)
+                                .foregroundColor(Color.white)
+                                .clipShape(Capsule())
+                                .shadow(radius: 5)
                         }
                         .sensoryFeedback(.impact(weight: .heavy, intensity: 1), trigger: sumOfDice)
-                        .padding()
-                        .accentColor(Color.white)
-                        .background(Color.red)
-                        .clipShape(RoundedRectangle(cornerRadius: 26))
-                        .font(.title)
-                        .bold()
                     }
-                    .toolbar {
-                        Button("debug") {
-                            print(sets)
-                        }
-                        Button("履歴") {
-                            showingSheet = true
-                        }
-                    }
-                    .sheet(isPresented: $showingSheet) {
-                        RollHistoryView()
-                    }
+                    .padding(.horizontal)
+
+                    Spacer()
+                }
+                .padding(.top)
+            }
+            .navigationTitle("Dicey")
+            .toolbar {
+                Button {
+                    showingSheet = true
+                } label: {
+                    Label("履歴", systemImage: "list.bullet.rectangle.portrait")
                 }
             }
-            
+            .sheet(isPresented: $showingSheet) {
+                RollHistoryView()
+            }
         }
-        
-        
-        
     }
     
     func rollDice() {
@@ -137,6 +181,18 @@ struct ContentView: View {
     
     func resetDiceValues(oldValue: Int, newValue: Int) {
         resetDiceValues()
+    }
+    
+    func incrementSides() {
+        if numberOfSides < 100 {
+            numberOfSides += 1
+        }
+    }
+
+    func decrementSides() {
+        if numberOfSides > 1 {
+            numberOfSides -= 1
+        }
     }
     
     func diceEffect() {
