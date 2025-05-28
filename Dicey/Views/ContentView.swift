@@ -21,61 +21,93 @@ struct ContentView: View {
     
     var body: some View {
         NavigationStack {
-            Section {
-                Picker("サイコロの面", selection: $numberOfSides) {
-                    ForEach(1..<101, id: \.self) {
-                        Text("\($0)面")
-                    }
-                }
-                Picker("サイコロの数", selection: $numberOfDice) {
-                    ForEach(1..<4, id: \.self) {
-                        Text("\($0)個")
-                    }
-                }
-            }
-            Section {
-                HStack {
-                    VStack {
-                        Text("サイコロ 1")
-                        Text(String(diceValue1))
-                    }
-                    if numberOfDice >= 2 {
-                        VStack {
-                            Text("サイコロ 2")
-                            Text(String(diceValue2))
+            ZStack {
+                VStack {
+                    Section {
+                        HStack {
+                            Text("サイコロの面")
+                            Spacer()
+                            Picker("サイコロの面", selection: $numberOfSides) {
+                                ForEach(1..<101, id: \.self) {
+                                    Text("\($0)面")
+                                }
+                            }
+                        }
+                        HStack {
+                            Text("サイコロの数")
+                            Spacer()
+                            Picker("サイコロの数", selection: $numberOfDice) {
+                                ForEach(1..<4, id: \.self) {
+                                    Text("\($0)個")
+                                }
+                            }
                         }
                     }
-                    if numberOfDice >= 3 {
-                        VStack {
-                            Text("サイコロ 3")
-                            Text(String(diceValue3))
+                    .padding()
+                    .font(.title)
+                    .bold()
+                    Section {
+                        HStack {
+                            Spacer()
+                            VStack {
+                                Text("No.1")
+                                Text(String(diceValue1))
+                            }
+                            if numberOfDice >= 2 {
+                                Spacer()
+                                VStack {
+                                    Text("No.2")
+                                    Text(String(diceValue2))
+                                }
+                            }
+                            if numberOfDice >= 3 {
+                                Spacer()
+                                VStack {
+                                    Text("No.3")
+                                    Text(String(diceValue3))
+                                }
+                            }
+                            Spacer()
                         }
                     }
+                    .padding()
+                    .font(.title)
+                    .bold()
+                    Section {
+                        Text("合計値")
+                        Text(String(sumOfDice))
+                    }
+                    .padding()
+                    .font(.title)
+                    .bold()
+                    Section {
+                        Button("振る！") {
+                            diceEffect()
+                        }
+                        .sensoryFeedback(.impact(weight: .heavy, intensity: 1), trigger: sumOfDice)
+                        .padding()
+                        .accentColor(Color.white)
+                        .background(Color.red)
+                        .clipShape(RoundedRectangle(cornerRadius: 26))
+                        .font(.title)
+                        .bold()
+                    }
+                    .toolbar {
+                        Button("debug") {
+                            print(sets)
+                        }
+                        Button("履歴") {
+                            showingSheet = true
+                        }
+                    }
+                    .sheet(isPresented: $showingSheet) {
+                        RollHistoryView()
+                    }
                 }
-            }
-            Section {
-                Text("合計値")
-                Text(String(sumOfDice))
-            }
-            Section {
-                Button("Roll") {
-                    diceEffect()
-                }
-                .sensoryFeedback(.impact(weight: .heavy, intensity: 1), trigger: sumOfDice)
             }
             
-            .toolbar {
-                Button("debug") {
-                    print(sets)
-                }
-                Button("履歴") {
-                    showingSheet = true
-                }
-            }
-            .sheet(isPresented: $showingSheet) {
-                RollHistoryView()
-            }
         }
+        
         
         
     }
