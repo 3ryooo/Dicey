@@ -14,8 +14,8 @@ struct RollHistoryView: View {
         NavigationStack {
             VStack {
                 List {
-                    ForEach(sets.dicevalues, id: \.self) {
-                        Text(String($0))
+                    ForEach(sets.dicevalues) { sets in
+                        Text(String(sets.sumOfDice))
                     }
                 }
             }
